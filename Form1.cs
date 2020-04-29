@@ -16,6 +16,8 @@ namespace HRManageApp
         int inEmpID = 0;
         bool isDefaultImage = true;
         string strConnectionString = @"Data Source=DESKTOP-M5MVHBR;Initial Catalog=HRManage;Integrated Security=True";
+        string strPreviousImage = "";
+        OpenFileDialog ofd = new OpenFileDialog();
         public Form1()
         {
             InitializeComponent();
@@ -71,6 +73,24 @@ namespace HRManageApp
         {
             PositionComboBoxFill();
             Clear();
+        }
+
+        private void btnImageBrowse_Click(object sender, EventArgs e)
+        {
+            ofd.Filter = "Images(.jpg, .png)|*.png;*.jpg";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                pbxPhoto.Image = new Bitmap(ofd.FileName);
+                isDefaultImage = false;
+                strPreviousImage = "";
+            }
+        }
+
+        private void btnImageClear_Click(object sender, EventArgs e)
+        {
+            pbxPhoto.Image = Image.FromFile(Application.StartupPath + "\\Images\\defaultimage.png");
+            isDefaultImage = true;
+            strPreviousImage = "";
         }
     }
 }
