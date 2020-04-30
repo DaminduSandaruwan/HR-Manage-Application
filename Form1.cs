@@ -96,7 +96,30 @@ namespace HRManageApp
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-
+            if (ValidateMasterDetailForm())
+            {
+                int _EmpID = 0;
+                using(SqlConnection sqlCon = new SqlConnection(strConnectionString))
+                {
+                    sqlCon.Open();
+                    SqlCommand sqlCmd = new SqlCommand("EmployeeAddOrEdit", sqlCon);
+                    sqlCmd.CommandType = CommandType.StoredProcedure;
+                    sqlCmd.Parameters.AddWithValue("@EmpID", inEmpID);
+                    sqlCmd.Parameters.AddWithValue("@EmpCode", txtEmpCode.Text.Trim());
+                    sqlCmd.Parameters.AddWithValue("EmpName", txtEmpName.Text.Trim());
+                    sqlCmd.Parameters.AddWithValue("@PositionID", Convert.ToInt32(cmbPosition.SelectedValue));
+                    sqlCmd.Parameters.AddWithValue("@DOB", dtpDOB.Value);
+                    sqlCmd.Parameters.AddWithValue("@Gender", cmbGender.Text);
+                    sqlCmd.Parameters.AddWithValue("@State", rbtRegular.Checked ? "Regular" : "Contractual");
+                    if (isDefaultImage)
+                        sqlCmd.Parameters.AddWithValue("@ImagePath", DBNull.Value);
+                    else if (inEmpID > 0 && strPreviousImage != "")
+                        sqlCmd.Parameters.AddWithValue("@ImagePath", strPreviousImage);
+                    else
+                        sqlCmd.Parameters.AddWithValue("@ImagePath", SaveImage(ofd.FileName));
+                    _EmpID = Convert.ToInt32(sqlCmd.ExecuteScalar());                    
+                }
+            }
         }
         
         bool ValidateMasterDetailForm()
