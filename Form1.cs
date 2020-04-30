@@ -118,6 +118,27 @@ namespace HRManageApp
                     else
                         sqlCmd.Parameters.AddWithValue("@ImagePath", SaveImage(ofd.FileName));
                     _EmpID = Convert.ToInt32(sqlCmd.ExecuteScalar());                    
+                } 
+
+                using (SqlConnection sqlCon = new SqlConnection(strConnectionString))
+                {
+                    sqlCon.Open();
+                    foreach(DataGridViewRow dgvRow in dgvEmpCompany.Rows)
+                    {
+                        if (dgvRow.IsNewRow) break;
+                        else
+                        {
+                            SqlCommand sqlCmd = new SqlCommand("EmpCompanyAddOrEdit", sqlCon);
+                            sqlCmd.CommandType = CommandType.StoredProcedure;
+                            sqlCmd.Parameters.AddWithValue("@EmpCmpID", Convert.ToInt32(dgvRow.Cells["dgvtxtEmpCompID"].Value==DBNull.Value ? "0" :dgvRow.Cells["dgvtxtEmpCompID"].Value));
+                            sqlCmd.Parameters.AddWithValue("@EmpID", _EmpID);
+                            sqlCmd.Parameters.AddWithValue("@CompanyName", dgvRow.Cells["dgvtxtCompanyName"].Value == DBNull.Value ? "" : dgvRow.Cells["dgvtxtCompanyName"].Value);
+                            sqlCmd.Parameters.AddWithValue("@PositionID", Convert.ToInt32(dgvRow.Cells["dgvcmbPosition"].Value == DBNull.Value ? "0" : dgvRow.Cells["dgvcmbPosition"].Value));
+                            sqlCmd.Parameters.AddWithValue("@ExpYear", Convert.ToInt32(dgvRow.Cells["dgvtxtYear"].Value == DBNull.Value ? "0" : dgvRow.Cells["dgvtxtYear"].Value));
+                            sqlCmd.ExecuteNonQuery();
+                        }
+
+                    }
                 }
             }
         }
