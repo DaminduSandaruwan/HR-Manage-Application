@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using System.IO;
 
 namespace HRManageApp
 {
@@ -92,5 +93,33 @@ namespace HRManageApp
             isDefaultImage = true;
             strPreviousImage = "";
         }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+
+        }
+        
+        bool ValidateMasterDetailForm()
+        {
+            bool _isValid = true;
+            if (txtEmpName.Text.Trim() == "")
+            {
+                MessageBox.Show("Employee Name is required");
+                _isValid = false;
+            }
+            return _isValid;
+        }
+
+        string SaveImage(string _imagePath)
+        {
+            string _fileName = Path.GetFileNameWithoutExtension(_imagePath);
+            string _extention = Path.GetExtension(_imagePath);
+
+            _fileName = _fileName.Length <= 15 ? _fileName : _fileName.Substring(0, 15);
+            _fileName = _fileName + DateTime.Now.ToString("yymmssfff") + _extention;
+            pbxPhoto.Image.Save(Application.StartupPath + "\\Images\\" + _fileName);
+            return _fileName;
+        }
+
     }
 }
