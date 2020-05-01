@@ -230,5 +230,44 @@ namespace HRManageApp
                 }
             }
         }
+
+        private void dgvEmpCompany_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            DataGridViewRow dgvRow = dgvEmpCompany.CurrentRow;
+            if(dgvRow.Cells["dgvtxtEmpCompID"].Value != DBNull.Value)
+            {
+                if (MessageBox.Show("Are You Sure to Delete this Record ?", "HR Manage", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    using (SqlConnection sqlCon = new SqlConnection(strConnectionString))
+                    {
+                        sqlCon.Open();
+                        SqlCommand sqlCmd = new SqlCommand("EmpCompanyDelete", sqlCon);
+                        sqlCmd.CommandType = CommandType.StoredProcedure;
+                        sqlCmd.Parameters.AddWithValue("@EmpCmpID", Convert.ToInt32(dgvRow.Cells["dgvtxtEmpCompID"].Value));
+                        sqlCmd.ExecuteNonQuery();
+                    }
+                }
+                else
+                    e.Cancel = true;
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if(MessageBox.Show("Are You Sure to Delete this Record ? ","HR Manage", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                using(SqlConnection sqlCon = new SqlConnection(strConnectionString))
+                {
+                    sqlCon.Open();
+                    SqlCommand sqlCmd = new SqlCommand("EmployeeDelete", sqlCon);
+                    sqlCmd.CommandType = CommandType.StoredProcedure;
+                    sqlCmd.Parameters.AddWithValue("@EmpID", inEmpID);
+                    sqlCmd.ExecuteNonQuery();
+                    Clear();
+                    FillEmployeeDataGridView();
+                    MessageBox.Show("Deleted Successfully");
+                };
+            }
+        }
     }
 }
