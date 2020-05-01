@@ -74,6 +74,7 @@ namespace HRManageApp
         {
             PositionComboBoxFill();
             Clear();
+            FillEmployeeDataGridView();
         }
 
         private void btnImageBrowse_Click(object sender, EventArgs e)
@@ -140,6 +141,7 @@ namespace HRManageApp
 
                     }
                 }
+                FillEmployeeDataGridView();
                 Clear();
                 MessageBox.Show("Submitted Sucessfully");
             }
@@ -165,6 +167,22 @@ namespace HRManageApp
             _fileName = _fileName + DateTime.Now.ToString("yymmssfff") + _extention;
             pbxPhoto.Image.Save(Application.StartupPath + "\\Images\\" + _fileName);
             return _fileName;
+        }
+
+        void FillEmployeeDataGridView()
+        {
+            using(SqlConnection sqlCon = new SqlConnection(strConnectionString))
+            {
+                sqlCon.Open();
+                SqlDataAdapter sqlDa = new SqlDataAdapter("EmployeeViewAll", sqlCon);
+                sqlDa.SelectCommand.CommandType = CommandType.StoredProcedure;
+                DataTable dtb1 = new DataTable();
+                sqlDa.Fill(dtb1);
+                dgvEmployee.DataSource = dtb1;
+                dgvEmployee.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvEmployee.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+                dgvEmployee.Columns[0].Visible = false;
+            }
         }
 
     }
