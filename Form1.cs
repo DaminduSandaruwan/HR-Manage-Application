@@ -269,5 +269,10 @@ namespace HRManageApp
                 };
             }
         }
+
+        private void Form1_MaximumSizeChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
