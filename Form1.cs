@@ -140,6 +140,8 @@ namespace HRManageApp
 
                     }
                 }
+                Clear();
+                MessageBox.Show("Submitted Sucessfully");
             }
         }
         
